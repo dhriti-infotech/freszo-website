@@ -1,15 +1,6 @@
-# Freszo — Premium React Website
+# Freszo — Premium Editorial Website
 
-A responsive, premium static website for **Freszo — Nature's Fresh**, built with React + Vite and structured so it can later be connected to APIs/CMS/backend services.
-
-## Included
-- Premium responsive design for mobile, tablet and desktop
-- Freszo logo and all supplied product imagery
-- Hero, brand story, product collection, quality, founders and contact sections
-- Product quick-view modal
-- WhatsApp CTA in hero, contact section and product enquiry
-- Three founder placeholders ready for real names/photos/bios
-- No backend dependency; content is easy to replace with API data later
+React + Vite static website for Freszo, a Bihar-born food brand focused on packaged and processed makhana and Indian spices.
 
 ## Run locally
 
@@ -18,20 +9,43 @@ npm install
 npm run dev
 ```
 
-Then open the local Vite URL shown in the terminal.
-
-## Build for production
+## Production build
 
 ```bash
 npm run build
 npm run preview
 ```
 
-## Before launch
+## GitHub Pages + GoDaddy domain
 
-1. Open `src/main.jsx`.
-2. Replace `WHATSAPP_NUMBER = '91XXXXXXXXXX'` with the Freszo WhatsApp number in international format, without `+` or spaces.
-3. Replace founder names and bios.
-4. Replace `hello@freszo.in` if the client has a different email.
-5. Replace the Instagram URL with the real Freszo profile.
-6. For a dynamic version, move `products` and company/contact data to an API/CMS and keep the present components as the UI layer.
+`vite.config.js` uses `base: './'`, so the same build can be served from:
+
+- GitHub Pages repository URL
+- A GoDaddy custom domain connected to GitHub Pages
+
+## WhatsApp / Phone
+
+Configured in `src/main.jsx`:
+
+```js
+const WHATSAPP_NUMBER = '916200895416';
+```
+
+Update this number before launch if Freszo will use a different business number.
+
+## Design direction
+
+The UI uses a premium editorial food-brand style inspired by the supplied reference video:
+
+- announcement ticker
+- clean sticky navigation
+- serif editorial typography
+- warm cream/gold/rust palette
+- circular hero product presentation
+- animated orbit rings and floating badges
+- scroll reveal animations
+- product hover interactions
+- fixed WhatsApp and phone actions
+- responsive mobile navigation
+- founder placeholders
+- Dhriti Infotech footer credit

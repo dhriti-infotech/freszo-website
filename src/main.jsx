@@ -1,6 +1,7 @@
 import React from 'react';
 import { createRoot } from 'react-dom/client';
 import {
+  ArrowDown,
   ArrowRight,
   Check,
   Leaf,
@@ -8,36 +9,28 @@ import {
   MapPin,
   Menu,
   MessageCircle,
+  Phone,
   Sparkles,
   X,
 } from 'lucide-react';
-
 import './styles.css';
 
-import logo from './assets/logo.jpeg';
+import logo from './assets/FORMAT-PNG.png';
 import periPeri from './assets/peri-peri-makhana.jpeg';
 import pudina from './assets/pudina-makhana.jpeg';
 import redChilli from './assets/red-chilli-2.jpeg';
 import coriander from './assets/coriander-1.jpeg';
 import turmeric from './assets/turmeric.jpeg';
 import makhana from './assets/makhana-pack.jpeg';
+import creamOnion from './assets/cream-onion-makhana.jpeg';
+import himalayanPinkSalt from './assets/himalayan-pink-salt-makhana.jpeg';
 
-/* -------------------------------------------------------------------------- */
-/* WhatsApp Configuration                                                     */
-/* -------------------------------------------------------------------------- */
-
-// International format without "+" or spaces.
-const WHATSAPP_NUMBER = '916200895416';
-
+const WHATSAPP_NUMBERS = ['918340279077', '916200895416'];
+const PRIMARY_WHATSAPP_NUMBER = WHATSAPP_NUMBERS[0];
 const whatsappMessage = encodeURIComponent(
   'Hello Freszo! I would like to know more about your products.'
 );
-
-const whatsappUrl = `https://wa.me/${WHATSAPP_NUMBER}?text=${whatsappMessage}`;
-
-/* -------------------------------------------------------------------------- */
-/* Product Data                                                               */
-/* -------------------------------------------------------------------------- */
+const whatsappUrl = `https://wa.me/${PRIMARY_WHATSAPP_NUMBER}?text=${whatsappMessage}`;
 
 const products = [
   {
@@ -45,451 +38,317 @@ const products = [
     category: 'Flavoured Makhana',
     image: periPeri,
     accent: 'red',
-    description:
-      'Light, crunchy makhana with a bold peri-peri kick.',
+    description: 'Light, crunchy makhana with a bold peri-peri kick.',
+    tag: 'Signature',
   },
   {
     name: 'Pudina Makhana',
     category: 'Flavoured Makhana',
     image: pudina,
     accent: 'green',
-    description:
-      'Refreshing mint flavour paired with naturally light crunch.',
+    description: 'Refreshing mint flavour paired with naturally light crunch.',
+    tag: 'Fresh Pick',
   },
   {
     name: 'Red Chilli Powder',
     category: 'Indian Spices',
     image: redChilli,
     accent: 'maroon',
-    description:
-      'A vibrant, aromatic chilli powder for everyday cooking.',
+    description: 'A vibrant, aromatic chilli powder for everyday cooking.',
+    tag: 'Kitchen Essential',
   },
   {
     name: 'Coriander Powder',
     category: 'Indian Spices',
     image: coriander,
     accent: 'forest',
-    description:
-      'Fragrant coriander powder crafted for rich, authentic flavour.',
+    description: 'Fragrant coriander powder crafted for rich, authentic flavour.',
+    tag: 'Everyday Favourite',
   },
   {
     name: 'Turmeric Powder',
     category: 'Indian Spices',
     image: turmeric,
     accent: 'gold',
-    description:
-      'Golden turmeric with an earthy aroma and fine texture.',
+    description: 'Golden turmeric with an earthy aroma and fine texture.',
+    tag: 'Pantry Staple',
+  },
+  // {
+  //   name: 'Premium Makhana',
+  //   category: 'Makhana',
+  //   image: makhana,
+  //   accent: 'navy',
+  //   description: 'Premium fox nuts — roasted, crunchy and made for mindful snacking.',
+  //   tag: 'Premium',
+  // },
+  {
+    name: 'Cream & Onion Makhana',
+    category: 'Flavoured Makhana',
+    image: creamOnion,
+    accent: 'plum',
+    description: 'Creamy, savoury and delightfully crunchy for a rich everyday snack.',
+    tag: 'New Variety',
   },
   {
-    name: 'Premium Makhana',
-    category: 'Makhana',
-    image: makhana,
-    accent: 'navy',
-    description:
-      'Premium fox nuts — roasted, crunchy and made for mindful snacking.',
+    name: 'Himalayan Pink Salt Makhana',
+    category: 'Flavoured Makhana',
+    image: himalayanPinkSalt,
+    accent: 'pink',
+    description: 'Lightly seasoned makhana with Himalayan pink salt and a clean, savoury finish.',
+    tag: 'New Variety',
   },
 ];
 
-/* -------------------------------------------------------------------------- */
-/* Instagram Icon                                                             */
-/* -------------------------------------------------------------------------- */
+const founders = [
+  { role: 'Co-Founder', name: 'Founder Name', index: '01' },
+  { role: 'Co-Founder', name: 'Founder Name', index: '02' },
+  { role: 'Co-Founder', name: 'Founder Name', index: '03' },
+];
 
 function InstagramIcon({ size = 18 }) {
   return (
-    <svg
-      width={size}
-      height={size}
-      viewBox="0 0 24 24"
-      fill="none"
-      stroke="currentColor"
-      strokeWidth="2"
-      strokeLinecap="round"
-      strokeLinejoin="round"
-      aria-hidden="true"
-    >
-      <rect
-        width="20"
-        height="20"
-        x="2"
-        y="2"
-        rx="5"
-      />
-
+    <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+      <rect width="20" height="20" x="2" y="2" rx="5" />
       <path d="M16 11.37a4 4 0 1 1-3.37-3.37A4 4 0 0 1 16 11.37z" />
-
-      <line
-        x1="17.5"
-        x2="17.51"
-        y1="6.5"
-        y2="6.5"
-      />
+      <line x1="17.5" x2="17.51" y1="6.5" y2="6.5" />
     </svg>
   );
 }
 
-/* -------------------------------------------------------------------------- */
-/* Main Application                                                           */
-/* -------------------------------------------------------------------------- */
+function useReveal() {
+  React.useEffect(() => {
+    const elements = document.querySelectorAll('[data-reveal]');
+    const observer = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          if (entry.isIntersecting) {
+            entry.target.classList.add('is-visible');
+            observer.unobserve(entry.target);
+          }
+        });
+      },
+      { threshold: 0.12 }
+    );
+
+    elements.forEach((element) => observer.observe(element));
+    return () => observer.disconnect();
+  }, []);
+}
 
 function App() {
   const [menuOpen, setMenuOpen] = React.useState(false);
   const [activeProduct, setActiveProduct] = React.useState(null);
+  const [scrolled, setScrolled] = React.useState(false);
+  const [scrollProgress, setScrollProgress] = React.useState(0);
 
-  /* ------------------------------------------------------------------------ */
-  /* Navigation                                                               */
-  /* ------------------------------------------------------------------------ */
+  useReveal();
+
+  React.useEffect(() => {
+    const handleScroll = () => {
+      const scrollY = window.scrollY;
+      const maxScroll = document.documentElement.scrollHeight - window.innerHeight;
+      const progress = maxScroll > 0 ? (scrollY / maxScroll) * 100 : 0;
+
+      setScrolled(scrollY > 24);
+      setScrollProgress(Math.min(100, Math.max(0, progress)));
+    };
+
+    handleScroll();
+    window.addEventListener('scroll', handleScroll, { passive: true });
+    window.addEventListener('resize', handleScroll, { passive: true });
+
+    return () => {
+      window.removeEventListener('scroll', handleScroll);
+      window.removeEventListener('resize', handleScroll);
+    };
+  }, []);
+
+  React.useEffect(() => {
+    document.body.style.overflow = activeProduct ? 'hidden' : '';
+    return () => {
+      document.body.style.overflow = '';
+    };
+  }, [activeProduct]);
 
   const scrollTo = (id) => {
     setMenuOpen(false);
-
-    document.getElementById(id)?.scrollIntoView({
-      behavior: 'smooth',
-    });
+    document.getElementById(id)?.scrollIntoView({ behavior: 'smooth' });
   };
-
-  /* ------------------------------------------------------------------------ */
-  /* Render                                                                   */
-  /* ------------------------------------------------------------------------ */
 
   return (
     <div className="site-shell">
-      {/* ================================================================== */}
-      {/* NAVBAR                                                             */}
-      {/* ================================================================== */}
+      <div className="scroll-progress" aria-hidden="true">
+        <span style={{ width: `${scrollProgress}%` }} />
+      </div>
 
-      <header className="navbar">
+      <div className="top-strip" aria-label="Freszo highlights">
+        <div className="top-strip-track">
+          <span><Leaf size={14} /> BIHAR BORN · NATURE'S FRESH</span>
+          <span><Sparkles size={14} /> PREMIUM MAKHANA & INDIAN SPICES</span>
+          <span><Check size={14} /> QUALITY FOCUSED · BEAUTIFULLY PACKED</span>
+          <span><Leaf size={14} /> FROM BIHAR TO YOUR TABLE</span>
+          <span><Sparkles size={14} /> PREMIUM MAKHANA & INDIAN SPICES</span>
+        </div>
+      </div>
+
+      <header className={`navbar ${scrolled ? 'navbar-scrolled' : ''}`}>
         <div className="nav-inner">
-          {/* Logo */}
-          <button
-            type="button"
-            className="brand"
-            onClick={() => scrollTo('home')}
-            aria-label="Freszo home"
-          >
-            <img
-              src={logo}
-              alt="Freszo Nature's Fresh"
-            />
+          <button type="button" className="brand" onClick={() => scrollTo('home')} aria-label="Freszo home">
+            <img src={logo} alt="Freszo Nature's Fresh" />
           </button>
 
-          {/* Desktop / Mobile Navigation */}
-          <nav
-            className={
-              menuOpen
-                ? 'nav-links open'
-                : 'nav-links'
-            }
-          >
-            <button
-              type="button"
-              onClick={() => scrollTo('home')}
-            >
-              Home
-            </button>
-
-            <button
-              type="button"
-              onClick={() => scrollTo('story')}
-            >
-              Our Story
-            </button>
-
-            <button
-              type="button"
-              onClick={() => scrollTo('products')}
-            >
-              Products
-            </button>
-
-            <button
-              type="button"
-              onClick={() => scrollTo('quality')}
-            >
-              Quality
-            </button>
-
-            <button
-              type="button"
-              onClick={() => scrollTo('founders')}
-            >
-              Founders
-            </button>
-
-            <button
-              type="button"
-              className="nav-contact"
-              onClick={() => scrollTo('contact')}
-            >
-              Contact Us
-              <ArrowRight size={15} />
+          <nav className={`nav-links ${menuOpen ? 'open' : ''}`}>
+            <button type="button" onClick={() => scrollTo('home')}>Home</button>
+            <button type="button" onClick={() => scrollTo('story')}>Our Story</button>
+            <button type="button" onClick={() => scrollTo('products')}>Products</button>
+            <button type="button" onClick={() => scrollTo('quality')}>Quality</button>
+            <button type="button" onClick={() => scrollTo('founders')}>Founders</button>
+            <button type="button" className="nav-contact" onClick={() => scrollTo('contact')}>
+              Contact Us <ArrowRight size={15} />
             </button>
           </nav>
 
-          {/* Mobile Menu */}
-          <button
-            type="button"
-            className="menu-toggle"
-            onClick={() => setMenuOpen((value) => !value)}
-            aria-label="Toggle navigation"
-            aria-expanded={menuOpen}
-          >
-            {menuOpen ? (
-              <X size={23} />
-            ) : (
-              <Menu size={23} />
-            )}
+          <button type="button" className="menu-toggle" onClick={() => setMenuOpen((value) => !value)} aria-label="Toggle navigation" aria-expanded={menuOpen}>
+            {menuOpen ? <X size={23} /> : <Menu size={23} />}
           </button>
         </div>
       </header>
 
       <main>
-        {/* ================================================================ */}
-        {/* HERO                                                             */}
-        {/* ================================================================ */}
+        <section id="home" className="hero hero-reference-style">
+          <div className="hero-wash hero-wash-one" />
+          <div className="hero-wash hero-wash-two" />
+          <div className="hero-dots" />
 
-        <section
-          id="home"
-          className="hero"
-        >
-          <div className="hero-glow" />
-
-          <div className="hero-copy">
-            <div className="eyebrow">
-              <span />
-              Bihar born. Naturally better.
+          <div className="hero-copy" data-reveal="left">
+            <div className="hero-outline-label">
+              <Leaf size={13} />
+              <span>BIHAR BORN · PREMIUM FOOD BRAND</span>
             </div>
 
             <h1>
               Nature's goodness,
               <br />
-              <em>packed fresh.</em>
+              <em>made iconic.</em>
             </h1>
 
-            <p>
-              Premium makhana and authentic Indian spices,
-              thoughtfully processed and beautifully packed
-              from the heart of Bihar.
+            <p className="hero-description">
+              Premium makhana and authentic Indian spices, thoughtfully processed and beautifully packed from the heart of Bihar.
             </p>
 
             <div className="hero-actions">
-              <button
-                type="button"
-                className="primary-btn"
-                onClick={() => scrollTo('products')}
-              >
-                Explore Products
-                <ArrowRight size={18} />
+              <button type="button" className="primary-btn" onClick={() => scrollTo('products')}>
+                Explore Products <ArrowRight size={18} />
               </button>
-
-              <a
-                className="whatsapp-btn"
-                href={whatsappUrl}
-                target="_blank"
-                rel="noreferrer"
-              >
-                <MessageCircle size={19} />
-                Chat on WhatsApp
+              <a className="hero-outline-btn" href={whatsappUrl} target="_blank" rel="noreferrer">
+                <MessageCircle size={17} /> Talk to Freszo
               </a>
             </div>
 
-            <div className="hero-trust">
-              <span>
-                <Check size={15} />
-                Quality focused
-              </span>
-
-              <span>
-                <Leaf size={15} />
-                Nature inspired
-              </span>
-
-              <span>
-                <Sparkles size={15} />
-                Premium range
-              </span>
+            <div className="hero-meta">
+              <span><MapPin size={15} /> Bihar, India</span>
+              <span><Check size={15} /> Quality focused</span>
             </div>
           </div>
 
-          <div className="hero-visual">
-            <div className="hero-ring ring-one" />
-            <div className="hero-ring ring-two" />
-            <div className="hero-card-back" />
+          <div className="hero-visual hero-reference-visual" data-reveal="right">
+            <div className="hero-orbit orbit-one" />
+            <div className="hero-orbit orbit-two" />
+            <div className="hero-orbit orbit-three" />
 
-            <img
-              src={periPeri}
-              alt="Freszo Peri-Peri Makhana"
-            />
+            <span className="hero-dot dot-one" />
+            <span className="hero-dot dot-two" />
+            <span className="hero-dot dot-three" />
 
-            <div className="floating-note">
-              <Leaf size={18} />
-
-              <div>
-                <strong>Nature's Fresh</strong>
-                <small>From Bihar to your table</small>
-              </div>
+            <div className="hero-product-circle">
+              <img src={periPeri} alt="Freszo Peri-Peri Makhana" />
             </div>
+
+            <div className="hero-floating-badge badge-top">
+              <Sparkles size={15} />
+              <span><strong>Signature</strong><small>Peri-Peri Makhana</small></span>
+            </div>
+
+            <div className="hero-floating-badge badge-bottom">
+              <Check size={15} />
+              <span><strong>Premium Quality</strong><small>Nature's Fresh</small></span>
+            </div>
+          </div>
+
+          <button type="button" className="scroll-cue" onClick={() => scrollTo('story')} aria-label="Scroll to our story">
+            <span>Discover Freszo</span><ArrowDown size={16} />
+          </button>
+        </section>
+
+        <section className="marquee" aria-label="Freszo categories">
+          <div className="marquee-track">
+            {['MAKHANA', 'INDIAN SPICES', 'BIHAR', "NATURE'S FRESH", 'MAKHANA', 'INDIAN SPICES', 'BIHAR', "NATURE'S FRESH"].map((item, index) => (
+              <React.Fragment key={`${item}-${index}`}>
+                <span>{item}</span><i>✦</i>
+              </React.Fragment>
+            ))}
           </div>
         </section>
 
-        {/* ================================================================ */}
-        {/* MARQUEE                                                          */}
-        {/* ================================================================ */}
-
-        <section className="marquee">
-          <div>
-            <span>MAKHANA</span>
-            <i>✦</i>
-
-            <span>INDIAN SPICES</span>
-            <i>✦</i>
-
-            <span>BIHAR</span>
-            <i>✦</i>
-
-            <span>NATURE'S FRESH</span>
-            <i>✦</i>
-
-            <span>MAKHANA</span>
-            <i>✦</i>
-
-            <span>INDIAN SPICES</span>
-          </div>
+        <section className="brand-values" aria-label="Freszo brand values">
+          <div className="brand-value" data-reveal="up"><span>01</span><strong>Bihar Born</strong><small>Rooted in the land of makhana</small></div>
+          <div className="brand-value" data-reveal="up" style={{ '--delay': '80ms' }}><span>02</span><strong>Premium Makhana</strong><small>Light, crunchy & thoughtfully packed</small></div>
+          <div className="brand-value" data-reveal="up" style={{ '--delay': '160ms' }}><span>03</span><strong>Indian Spices</strong><small>Everyday flavour with character</small></div>
+          <div className="brand-value" data-reveal="up" style={{ '--delay': '240ms' }}><span>04</span><strong>Nature's Fresh</strong><small>Simple, considered food products</small></div>
         </section>
 
-        {/* ================================================================ */}
-        {/* OUR STORY                                                         */}
-        {/* ================================================================ */}
-
-        <section
-          id="story"
-          className="story section"
-        >
-          <div className="story-image">
-            <img
-              src={makhana}
-              alt="Freszo premium makhana"
-            />
-
-            <div className="story-badge">
-              <span>EST.</span>
-              <strong>BIHAR</strong>
-              <span>INDIA</span>
-            </div>
+        <section id="story" className="story section">
+          <div className="story-image" data-reveal="left">
+            <div className="image-overline">FROM THE HEART OF BIHAR</div>
+            <img src={makhana} alt="Freszo premium makhana" />
+            <div className="story-badge"><span>EST.</span><strong>BIHAR</strong><span>INDIA</span></div>
+            <div className="story-index">02 / 06</div>
           </div>
 
-          <div className="story-copy">
-            <div className="section-kicker">
-              The Freszo philosophy
-            </div>
-
-            <h2>
-              Rooted in Bihar.
-              <br />
-              <em>Made for everywhere.</em>
-            </h2>
-
+          <div className="story-copy" data-reveal="right">
+            <div className="section-kicker">The Freszo philosophy</div>
+            <h2>Rooted in Bihar.<br /><em>Made for everywhere.</em></h2>
             <p>
-              Freszo is a Bihar-born food startup built
-              around a simple belief: everyday food can be
-              wholesome, authentic and premium at the same
-              time.
+              Freszo is a Bihar-born food startup built around a simple belief: everyday food can be wholesome, authentic and premium at the same time.
             </p>
-
             <p>
-              We bring together carefully selected makhana
-              and familiar Indian spices, using thoughtful
-              processing and packaging to preserve the
-              character of the ingredients.
+              We bring together carefully selected makhana and familiar Indian spices, using thoughtful processing and packaging to preserve the character of the ingredients.
             </p>
 
             <div className="story-points">
-              <div>
-                <span>01</span>
-
-                <b>Source with care</b>
-
-                <small>
-                  We value ingredient quality from the very
-                  beginning.
-                </small>
-              </div>
-
-              <div>
-                <span>02</span>
-
-                <b>Craft with purpose</b>
-
-                <small>
-                  Clean, considered processing for everyday
-                  goodness.
-                </small>
-              </div>
-
-              <div>
-                <span>03</span>
-
-                <b>Pack with pride</b>
-
-                <small>
-                  A premium Freszo experience, every time.
-                </small>
-              </div>
+              <div><span>01</span><b>Source with care</b><small>We value ingredient quality from the very beginning.</small></div>
+              <div><span>02</span><b>Craft with purpose</b><small>Clean, considered processing for everyday goodness.</small></div>
+              <div><span>03</span><b>Pack with pride</b><small>A premium Freszo experience, every time.</small></div>
             </div>
           </div>
         </section>
 
-        {/* ================================================================ */}
-        {/* PRODUCTS                                                          */}
-        {/* ================================================================ */}
-
-        <section
-          id="products"
-          className="products section"
-        >
-          <div className="section-heading">
+        <section id="products" className="products section">
+          <div className="section-heading" data-reveal="up">
             <div>
-              <div className="section-kicker">
-                Our collection
-              </div>
-
-              <h2>
-                Good food deserves
-                <br />
-                <em>good ingredients.</em>
-              </h2>
+              <div className="section-kicker">Our collection</div>
+              <h2>Good food deserves<br /><em>good ingredients.</em></h2>
             </div>
-
-            <p>
-              Discover our growing range of premium makhana
-              and Indian spices, created for modern kitchens
-              and mindful snacking.
-            </p>
+            <p>Discover our growing range of premium makhana and Indian spices, created for modern kitchens and mindful snacking.</p>
           </div>
 
           <div className="product-grid">
-            {products.map((product) => (
+            {products.map((product, index) => (
               <article
                 className={`product-card ${product.accent}`}
                 key={product.name}
                 onClick={() => setActiveProduct(product)}
+                data-reveal="up"
+                style={{ '--delay': `${index * 70}ms` }}
               >
                 <div className="product-image">
-                  <img
-                    src={product.image}
-                    alt={product.name}
-                  />
-
-                  <span className="view-product">
-                    View
-                    <ArrowRight size={15} />
-                  </span>
+                  <img src={product.image} alt={product.name} />
+                  <span className="product-tag">{product.tag}</span>
+                  <span className="view-product">Discover <ArrowRight size={15} /></span>
                 </div>
-
                 <div className="product-info">
                   <small>{product.category}</small>
-
                   <h3>{product.name}</h3>
-
                   <p>{product.description}</p>
                 </div>
               </article>
@@ -497,362 +356,151 @@ function App() {
           </div>
         </section>
 
-        {/* ================================================================ */}
-        {/* QUALITY                                                           */}
-        {/* ================================================================ */}
-
-        <section
-          id="quality"
-          className="quality section"
-        >
-          <div className="quality-intro">
-            <div className="section-kicker">
-              Why Freszo
-            </div>
-
-            <h2>
-              Simple ingredients.
-              <br />
-              <em>Serious standards.</em>
-            </h2>
-
-            <p>
-              We are building Freszo around the details
-              that matter — ingredient selection, clean
-              presentation and consistent quality.
-            </p>
+        <section id="quality" className="quality section">
+          <div className="quality-intro" data-reveal="left">
+            <div className="section-kicker">Why Freszo</div>
+            <h2>Simple ingredients.<br /><em>Serious standards.</em></h2>
+            <p>We are building Freszo around the details that matter — ingredient selection, clean presentation and consistent quality.</p>
+            <button type="button" className="text-link" onClick={() => scrollTo('contact')}>Talk to Freszo <ArrowRight size={16} /></button>
           </div>
 
           <div className="quality-grid">
-            <div className="quality-card">
-              <div className="quality-icon">
-                <Leaf />
-              </div>
-
-              <h3>Nature inspired</h3>
-
-              <p>
-                Products designed around the natural
-                character of makhana and Indian spices.
-              </p>
-            </div>
-
-            <div className="quality-card">
-              <div className="quality-icon">
-                <Sparkles />
-              </div>
-
-              <h3>Premium presentation</h3>
-
-              <p>
-                Thoughtful packaging that makes everyday
-                pantry staples feel special.
-              </p>
-            </div>
-
-            <div className="quality-card">
-              <div className="quality-icon">
-                <Check />
-              </div>
-
-              <h3>Quality focused</h3>
-
-              <p>
-                Careful sourcing and processing with
-                consistency at the center.
-              </p>
-            </div>
+            <div className="quality-card" data-reveal="up"><span className="quality-number">01</span><div className="quality-icon"><Leaf /></div><h3>Nature inspired</h3><p>Products designed around the natural character of makhana and Indian spices.</p></div>
+            <div className="quality-card" data-reveal="up" style={{ '--delay': '100ms' }}><span className="quality-number">02</span><div className="quality-icon"><Sparkles /></div><h3>Premium presentation</h3><p>Thoughtful packaging that makes everyday pantry staples feel special.</p></div>
+            <div className="quality-card" data-reveal="up" style={{ '--delay': '200ms' }}><span className="quality-number">03</span><div className="quality-icon"><Check /></div><h3>Quality focused</h3><p>Careful sourcing and processing with consistency at the center.</p></div>
           </div>
         </section>
 
-        {/* ================================================================ */}
-        {/* FOUNDERS                                                          */}
-        {/* ================================================================ */}
-
-        <section
-          id="founders"
-          className="founders section"
-        >
-          <div className="section-heading centered">
+        <section id="founders" className="founders section">
+          <div className="section-heading centered" data-reveal="up">
             <div>
-              <div className="section-kicker">
-                The people behind Freszo
-              </div>
-
-              <h2>
-                Built by <em>three believers.</em>
-              </h2>
+              <div className="section-kicker">The people behind Freszo</div>
+              <h2>Built by <em>three believers.</em></h2>
             </div>
-
-            <p>
-              A placeholder founder section ready for your
-              real profiles, photographs and bios.
-            </p>
+            <p>A placeholder founder section ready for your real profiles, photographs and bios.</p>
           </div>
 
           <div className="founder-grid">
-            {[
-              'Co-Founder',
-              'Co-Founder',
-              'Co-Founder',
-            ].map((role, index) => (
-              <article
-                className="founder-card"
-                key={index}
-              >
-                <div className="founder-photo">
-                  <span>
-                    {String(index + 1).padStart(2, '0')}
-                  </span>
-                </div>
-
-                <small>{role}</small>
-
-                <h3>Founder Name</h3>
-
-                <p>
-                  Short introduction about the founder,
-                  their role and what they bring to Freszo.
-                </p>
-
+            {founders.map((founder, index) => (
+              <article className="founder-card" key={founder.index} data-reveal="up" style={{ '--delay': `${index * 90}ms` }}>
+                <div className="founder-photo"><span>{founder.index}</span><div className="founder-silhouette" /></div>
+                <small>{founder.role}</small>
+                <h3>{founder.name}</h3>
+                <p>Short introduction about the founder, their role and what they bring to Freszo.</p>
                 <div className="founder-line" />
               </article>
             ))}
           </div>
         </section>
 
-        {/* ================================================================ */}
-        {/* CONTACT                                                           */}
-        {/* ================================================================ */}
-
-        <section
-          id="contact"
-          className="contact section"
-        >
-          <div className="contact-panel">
+        <section id="contact" className="contact section">
+          <div className="contact-panel" data-reveal="up">
             <div className="contact-copy">
-              <div className="section-kicker">
-                Let's connect
-              </div>
-
-              <h2>
-                Bring Freszo
-                <br />
-                <em>to your table.</em>
-              </h2>
-
-              <p>
-                Interested in our products, distribution,
-                partnerships or simply want to say hello?
-                We'd love to hear from you.
-              </p>
+              <div className="section-kicker">Let's connect</div>
+              <h2>Bring Freszo<br /><em>to your table.</em></h2>
+              <p>Interested in our products, distribution, partnerships or simply want to say hello? We'd love to hear from you.</p>
 
               <div className="contact-list">
-                {/* WhatsApp */}
-                <a
-                  href={whatsappUrl}
-                  target="_blank"
-                  rel="noreferrer"
-                >
+                <a href={`https://wa.me/${WHATSAPP_NUMBERS[0]}?text=${whatsappMessage}`} target="_blank" rel="noreferrer">
                   <MessageCircle size={20} />
-
-                  <span>
-                    <small>WhatsApp</small>
-                    Chat with Freszo
-                  </span>
+                  <span><small>WhatsApp</small>+91 83402 79077</span>
                 </a>
-
-                {/* Email */}
-                <a href="mailto:hello@freszo.in">
-                  <Mail size={20} />
-
-                  <span>
-                    <small>Email</small>
-                    hello@freszo.in
-                  </span>
+                <a href={`https://wa.me/${WHATSAPP_NUMBERS[1]}?text=${whatsappMessage}`} target="_blank" rel="noreferrer">
+                  <MessageCircle size={20} />
+                  <span><small>WhatsApp</small>+91 62008 95416</span>
                 </a>
-
-                {/* Location */}
-                <div>
+                <a href="mailto:hello@freszo.in"><Mail size={20} /><span><small>Email</small>hello@freszo.in</span></a>
+                <div className="contact-address">
                   <MapPin size={20} />
-
-                  <span>
-                    <small>Based in</small>
-                    Bihar, India
-                  </span>
+                  <span><small>Company Address</small>Vill- Sirsiya, Block - Forbesganj, District - Araria, Pin- 854318, Bihar, India</span>
                 </div>
               </div>
             </div>
 
             <div className="contact-cta">
-              <div className="cta-logo">
-                <img
-                  src={logo}
-                  alt="Freszo"
-                />
-              </div>
-
+              <div className="cta-logo"><img src={logo} alt="Freszo" /></div>
+              <span className="cta-overline">START A CONVERSATION</span>
               <h3>Have a question?</h3>
-
-              <p>
-                Start a conversation with us on WhatsApp.
-              </p>
-
-              <a
-                href={whatsappUrl}
-                target="_blank"
-                rel="noreferrer"
-                className="primary-btn"
-              >
-                Message us
-                <MessageCircle size={18} />
-              </a>
-
-              <small className="number-note">
-                Replace the WhatsApp number in{' '}
-                <code>src/main.jsx</code> before launch.
-              </small>
+              <p>Start a conversation with us on WhatsApp.</p>
+              <div className="cta-phone-list">
+                <a href={`https://wa.me/${WHATSAPP_NUMBERS[0]}?text=${whatsappMessage}`} target="_blank" rel="noreferrer">+91 83402 79077</a>
+                <a href={`https://wa.me/${WHATSAPP_NUMBERS[1]}?text=${whatsappMessage}`} target="_blank" rel="noreferrer">+91 62008 95416</a>
+              </div>
+              <a href={whatsappUrl} target="_blank" rel="noreferrer" className="primary-btn">Message us <MessageCircle size={18} /></a>
             </div>
           </div>
         </section>
       </main>
 
-      {/* ================================================================== */}
-      {/* FOOTER                                                             */}
-      {/* ================================================================== */}
+      <div className="floating-contact" aria-label="Quick contact">
+        <a
+          className="floating-contact-btn whatsapp-float"
+          href={whatsappUrl}
+          target="_blank"
+          rel="noreferrer"
+          aria-label="Chat with Freszo on WhatsApp"
+        >
+          <MessageCircle size={22} />
+          <span className="floating-tooltip">WhatsApp</span>
+        </a>
+
+        <div className="floating-phone-stack">
+          <a
+            className="floating-contact-btn phone-float"
+            href="tel:+918340279077"
+            aria-label="Call Freszo at +91 83402 79077"
+          >
+            <Phone size={21} />
+            <span className="floating-tooltip">+91 83402 79077</span>
+          </a>
+          <a
+            className="floating-contact-btn phone-float secondary-phone"
+            href="tel:+916200895416"
+            aria-label="Call Freszo at +91 62008 95416"
+          >
+            <Phone size={18} />
+            <span className="floating-tooltip">+91 62008 95416</span>
+          </a>
+        </div>
+      </div>
 
       <footer className="footer">
         <div className="footer-inner">
-          {/* Footer Brand */}
           <div>
-            <img
-              src={logo}
-              alt="Freszo Nature's Fresh"
-            />
-
-            <p>
-              Premium makhana & Indian spices.
-              <br />
-              Nature's fresh, from Bihar.
-            </p>
+            <img src={logo} alt="Freszo Nature's Fresh" />
+            <p>Premium makhana & Indian spices.<br />Nature's fresh, from Bihar.</p><address>Vill- Sirsiya, Block - Forbesganj, District - Araria,<br />Pin- 854318, Bihar, India</address>
           </div>
 
-          {/* Footer Navigation */}
           <div className="footer-nav">
-            <button
-              type="button"
-              onClick={() => scrollTo('story')}
-            >
-              Our Story
-            </button>
-
-            <button
-              type="button"
-              onClick={() => scrollTo('products')}
-            >
-              Products
-            </button>
-
-            <button
-              type="button"
-              onClick={() => scrollTo('quality')}
-            >
-              Quality
-            </button>
-
-            <button
-              type="button"
-              onClick={() => scrollTo('contact')}
-            >
-              Contact
-            </button>
+            <button type="button" onClick={() => scrollTo('story')}>Our Story</button>
+            <button type="button" onClick={() => scrollTo('products')}>Products</button>
+            <button type="button" onClick={() => scrollTo('quality')}>Quality</button>
+            <button type="button" onClick={() => scrollTo('contact')}>Contact</button>
           </div>
 
-          {/* Social Links */}
           <div className="footer-social">
-            <a
-              href="https://www.instagram.com/"
-              target="_blank"
-              rel="noreferrer"
-              aria-label="Instagram"
-            >
-              <InstagramIcon size={18} />
-            </a>
-
-            <a
-              href={whatsappUrl}
-              target="_blank"
-              rel="noreferrer"
-              aria-label="WhatsApp"
-            >
-              <MessageCircle size={18} />
-            </a>
+            <a href="https://www.instagram.com/" target="_blank" rel="noreferrer" aria-label="Instagram"><InstagramIcon size={18} /></a>
+            <a href={whatsappUrl} target="_blank" rel="noreferrer" aria-label="WhatsApp"><MessageCircle size={18} /></a>
           </div>
         </div>
 
         <div className="footer-bottom">
-          <span>
-            © {new Date().getFullYear()} Freszo. All rights reserved.
-          </span>
-
-          <span>
-            Made with care in Bihar, India.
-          </span>
-
-          <span className="developer-credit">
-            Designed &amp; Developed by{' '}
-            <strong>Dhriti Infotech</strong>, Hi-Tech City, Hyderabad, India.
-          </span>
+          <span>© {new Date().getFullYear()} Freszo. All rights reserved.</span>
+          <span>Made with care in Bihar, India.</span>
+          <span className="developer-credit">Designed &amp; Developed by <strong>Dhriti Infotech</strong>, Hi-Tech City, Hyderabad, India.</span>
         </div>
       </footer>
 
-      {/* ================================================================== */}
-      {/* PRODUCT MODAL                                                      */}
-      {/* ================================================================== */}
-
       {activeProduct && (
-        <div
-          className="modal-backdrop"
-          onClick={() => setActiveProduct(null)}
-        >
-          <div
-            className="product-modal"
-            onClick={(event) => event.stopPropagation()}
-          >
-            <button
-              type="button"
-              className="modal-close"
-              onClick={() => setActiveProduct(null)}
-              aria-label="Close product details"
-            >
-              <X />
-            </button>
-
-            <img
-              src={activeProduct.image}
-              alt={activeProduct.name}
-            />
-
+        <div className="modal-backdrop" onClick={() => setActiveProduct(null)}>
+          <div className="product-modal" onClick={(event) => event.stopPropagation()}>
+            <button type="button" className="modal-close" onClick={() => setActiveProduct(null)} aria-label="Close product details"><X /></button>
+            <img src={activeProduct.image} alt={activeProduct.name} />
             <div>
-              <small>
-                {activeProduct.category}
-              </small>
-
+              <small>{activeProduct.category}</small>
               <h2>{activeProduct.name}</h2>
-
-              <p>
-                {activeProduct.description}
-              </p>
-
-              <a
-                href={whatsappUrl}
-                target="_blank"
-                rel="noreferrer"
-                className="primary-btn"
-              >
-                Enquire on WhatsApp
-                <MessageCircle size={18} />
-              </a>
+              <p>{activeProduct.description}</p>
+              <a href={whatsappUrl} target="_blank" rel="noreferrer" className="primary-btn">Enquire on WhatsApp <MessageCircle size={18} /></a>
             </div>
           </div>
         </div>
@@ -861,12 +509,4 @@ function App() {
   );
 }
 
-/* -------------------------------------------------------------------------- */
-/* React Root                                                                */
-/* -------------------------------------------------------------------------- */
-
-createRoot(
-  document.getElementById('root')
-).render(
-  <App />
-);
+createRoot(document.getElementById('root')).render(<App />);
