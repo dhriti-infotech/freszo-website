@@ -140,6 +140,10 @@ function App() {
   const [activeProduct, setActiveProduct] = React.useState(null);
   const [scrolled, setScrolled] = React.useState(false);
   const [scrollProgress, setScrollProgress] = React.useState(0);
+  const [heroProductIndex, setHeroProductIndex] = React.useState(0);
+  const [heroPaused, setHeroPaused] = React.useState(false);
+
+  const heroProduct = products[heroProductIndex];
 
   useReveal();
 
@@ -164,6 +168,16 @@ function App() {
   }, []);
 
   React.useEffect(() => {
+    if (heroPaused) return undefined;
+
+    const interval = window.setInterval(() => {
+      setHeroProductIndex((current) => (current + 1) % products.length);
+    }, 4500);
+
+    return () => window.clearInterval(interval);
+  }, [heroPaused]);
+
+  React.useEffect(() => {
     document.body.style.overflow = activeProduct ? 'hidden' : '';
     return () => {
       document.body.style.overflow = '';
@@ -176,7 +190,96 @@ function App() {
   };
 
   return (
-    <div className="site-shell">
+    <>
+      <style>{`
+        .hero-carousel-image {
+          animation: freszoHeroProductIn 700ms cubic-bezier(.22,.61,.36,1) both;
+        }
+
+        .hero-carousel-controls {
+          position: absolute;
+          left: 50%;
+          bottom: -28px;
+          transform: translateX(-50%);
+          z-index: 8;
+          display: flex;
+          align-items: center;
+          gap: 10px;
+          padding: 8px 10px;
+          border: 1px solid rgba(38, 39, 31, .10);
+          border-radius: 999px;
+          background: rgba(255, 255, 255, .88);
+          box-shadow: 0 12px 30px rgba(45, 36, 23, .10);
+          backdrop-filter: blur(12px);
+        }
+
+        .hero-carousel-arrow {
+          width: 30px;
+          height: 30px;
+          border: 0;
+          border-radius: 50%;
+          display: grid;
+          place-items: center;
+          background: #1e563f;
+          color: #fff;
+          cursor: pointer;
+          transition: transform 180ms ease, background 180ms ease;
+        }
+
+        .hero-carousel-arrow:hover {
+          transform: scale(1.08);
+          background: #174532;
+        }
+
+        .hero-carousel-arrow .arrow-prev {
+          transform: rotate(180deg);
+        }
+
+        .hero-carousel-dots {
+          display: flex;
+          align-items: center;
+          gap: 5px;
+        }
+
+        .hero-carousel-dot {
+          width: 6px;
+          height: 6px;
+          padding: 0;
+          border: 0;
+          border-radius: 999px;
+          background: rgba(38, 39, 31, .22);
+          cursor: pointer;
+          transition: width 220ms ease, background 220ms ease, transform 220ms ease;
+        }
+
+        .hero-carousel-dot.active {
+          width: 18px;
+          background: #b84a32;
+        }
+
+        .hero-carousel-dot:hover {
+          transform: scale(1.2);
+        }
+
+        @keyframes freszoHeroProductIn {
+          0% { opacity: 0; transform: scale(.94) translateY(10px); }
+          100% { opacity: 1; transform: scale(1) translateY(0); }
+        }
+
+        @media (max-width: 768px) {
+          .hero-carousel-controls {
+            bottom: -22px;
+          }
+        }
+
+        @media (prefers-reduced-motion: reduce) {
+          .hero-carousel-image {
+            animation: none;
+          }
+        }
+      `}</style>
+
+      <div className="site-shell">
       <div className="scroll-progress" aria-hidden="true">
         <span style={{ width: `${scrollProgress}%` }} />
       </div>
@@ -260,18 +363,63 @@ function App() {
             <span className="hero-dot dot-two" />
             <span className="hero-dot dot-three" />
 
-            <div className="hero-product-circle">
-              <img src={periPeri} alt="Freszo Peri-Peri Makhana" />
+            <div
+              className="hero-product-circle"
+              onMouseEnter={() => setHeroPaused(true)}
+              onMouseLeave={() => setHeroPaused(false)}
+              onFocus={() => setHeroPaused(true)}
+              onBlur={() => setHeroPaused(false)}
+            >
+              <img
+                key={heroProduct.name}
+                className="hero-carousel-image"
+                src={heroProduct.image}
+                alt={`Freszo ${heroProduct.name}`}
+              />
             </div>
 
             <div className="hero-floating-badge badge-top">
               <Sparkles size={15} />
-              <span><strong>Signature</strong><small>Peri-Peri Makhana</small></span>
+              <span><strong>{heroProduct.tag}</strong><small>{heroProduct.name}</small></span>
             </div>
 
             <div className="hero-floating-badge badge-bottom">
               <Check size={15} />
-              <span><strong>Premium Quality</strong><small>Nature's Fresh</small></span>
+              <span><strong>Premium Quality</strong><small>{heroProduct.category}</small></span>
+            </div>
+
+            <div className="hero-carousel-controls" aria-label="Hero product carousel controls">
+              <button
+                type="button"
+                className="hero-carousel-arrow"
+                onClick={() => setHeroProductIndex((current) => (current - 1 + products.length) % products.length)}
+                aria-label="Previous product"
+              >
+                <ArrowRight size={17} className="arrow-prev" />
+              </button>
+
+              <div className="hero-carousel-dots" role="tablist" aria-label="Select hero product">
+                {products.map((product, index) => (
+                  <button
+                    key={product.name}
+                    type="button"
+                    role="tab"
+                    aria-selected={heroProductIndex === index}
+                    aria-label={`Show ${product.name}`}
+                    className={`hero-carousel-dot ${heroProductIndex === index ? 'active' : ''}`}
+                    onClick={() => setHeroProductIndex(index)}
+                  />
+                ))}
+              </div>
+
+              <button
+                type="button"
+                className="hero-carousel-arrow"
+                onClick={() => setHeroProductIndex((current) => (current + 1) % products.length)}
+                aria-label="Next product"
+              >
+                <ArrowRight size={17} />
+              </button>
             </div>
           </div>
 
@@ -505,7 +653,8 @@ function App() {
           </div>
         </div>
       )}
-    </div>
+      </div>
+    </>
   );
 }
 
