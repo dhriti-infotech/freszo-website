@@ -792,12 +792,16 @@ function App() {
 
         <div className="footer-bottom">
           <span>
-            © {new Date().getFullYear()} Freszo.
-            All rights reserved.
+            © {new Date().getFullYear()} Freszo. All rights reserved.
           </span>
 
           <span>
             Made with care in Bihar, India.
+          </span>
+
+          <span className="developer-credit">
+            Designed &amp; Developed by{' '}
+            <strong>Dhriti Infotech</strong>, Hi-Tech City, Hyderabad, India.
           </span>
         </div>
       </footer>
